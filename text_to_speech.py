@@ -30,3 +30,9 @@ def create_text_sample(text):
         return shortened_text
     else:
         return text
+
+
+def save_as_audio(text, file_name):
+    engine.save_to_file(text, f'{file_name}.mp3')
+    engine.runAndWait()
+
