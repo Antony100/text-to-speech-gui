@@ -32,7 +32,6 @@ def create_text_sample(text):
         return text
 
 
-def save_as_audio(text, file_name):
-    engine.save_to_file(text, f'{file_name}.mp3')
+def save_as_audio(text, file_path, file_name):
+    engine.save_to_file(text, f'{file_path}\{file_name}.mp3')
     engine.runAndWait()
-

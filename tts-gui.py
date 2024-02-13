@@ -9,14 +9,14 @@ layout = [
              font=("Helvetica", 25),
              )
      ],
-    [sg.HorizontalSeparator(key='-HR-')],
+    [sg.HorizontalSeparator()],
     [sg.Text('Enter text here to be converted to speech:')],
     [sg.Multiline(
         size=(30, 20), key='-TEXT_INPUT-',
         expand_x=True, expand_y=True)
      ],
     [sg.Button('Play sample'), sg.Button('Close')],
-    [sg.HorizontalSeparator(key='-HR-')],
+    [sg.HorizontalSeparator()],
     [sg.Text('Convert to audio:',
              size=(15, 1),
              font=("Helvetica", 15),
@@ -26,10 +26,9 @@ layout = [
     [sg.Text('file path:', pad=((6, 11), (0, 0))), sg.In(enable_events=True,
      key='-LOCATION-'), sg.FolderBrowse()
      ],
-    [sg.Button('Convert', key='-CONVERT-')],
+    [sg.Button('Convert')],
         ]
 
-# Create the Window
 window = sg.Window(
     'Text To Speech', layout, resizable=True, grab_anywhere=True
     )
@@ -37,15 +36,20 @@ window = sg.Window(
 try:
     while True:
         event, values = window.read()
-        text_sample = tts.create_text_sample(values['-TEXT_INPUT-'])
+        if values is not None:
+            text_sample = tts.create_text_sample(values['-TEXT_INPUT-'])
 
         if event == sg.WIN_CLOSED or event == 'Close':
             break
         elif event == 'Play sample':
+            print(text_sample)
             tts.speak_words(text_sample)
+        elif event == 'Convert':
+            tts.save_as_audio(values['-TEXT_INPUT-'], values['-LOCATION-'],
+                              values['-FILE_NAME-'])
+            sg.popup_ok(f"{values['-FILE_NAME-']}.mp3 created!")
 
 except Exception as e:
-    # sg.popup_error_with_traceback(f"The following error occurred: {e}")
     sg.Print(
         'The following error occurred,:\n',
         sg.__file__, e,
