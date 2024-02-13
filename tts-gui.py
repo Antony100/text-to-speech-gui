@@ -45,7 +45,8 @@ try:
             print(text_sample)
             tts.speak_words(text_sample)
         elif event == 'Convert':
-            tts.save_as_audio(values['-TEXT_INPUT-'], values['-LOCATION-'],
+            tts.save_as_audio(values['-TEXT_INPUT-'],
+                              values['-LOCATION-'],
                               values['-FILE_NAME-'])
             sg.popup_ok(f"{values['-FILE_NAME-']}.mp3 created!")
 
