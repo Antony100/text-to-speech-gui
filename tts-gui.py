@@ -15,7 +15,8 @@ layout = [
         size=(30, 20), key='-TEXT_INPUT-',
         expand_x=True, expand_y=True)
      ],
-    [sg.Button('Play sample'), sg.Button('Close')],
+    [sg.Button('Play sample'), sg.Text('Set speech rate (default = 125):')],
+    # [sg.Column([[sg.Button('Move to End', size=(10, 1))]], justification='right')],
     [sg.HorizontalSeparator()],
     [sg.Text('Convert to audio:',
              size=(15, 1),
@@ -36,13 +37,13 @@ window = sg.Window(
 try:
     while True:
         event, values = window.read()
-        if values is not None:
+
+        if values['-TEXT_INPUT-']:
             text_sample = tts.create_text_sample(values['-TEXT_INPUT-'])
 
-        if event == sg.WIN_CLOSED or event == 'Close':
+        if event == sg.WIN_CLOSED:
             break
         elif event == 'Play sample':
-            print(text_sample)
             tts.speak_words(text_sample)
         elif event == 'Convert':
             tts.save_as_audio(values['-TEXT_INPUT-'],
@@ -58,6 +59,9 @@ except Exception as e:
         keep_on_top=True,
         wait=True,
         )
+
+
+
 
 
 window.close()
