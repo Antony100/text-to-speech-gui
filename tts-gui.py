@@ -20,7 +20,10 @@ layout = [
         size=(30, 20), key='-TEXT_INPUT-',
         expand_x=True, expand_y=True)
      ],
-    [sg.Button('Play sample'), sg.Push(), sg.Text('Set speech rate:'), sg.OptionMenu(speech_rates.keys(), default_value='normal', key='-OPTION MENU-')],
+    [sg.Button('Play sample'), sg.Push(), sg.Text('Set speech rate:'),
+     sg.OptionMenu(speech_rates.keys(), default_value='normal',
+                   key='-OPTION MENU-')
+     ],
     [sg.HorizontalSeparator()],
     [sg.Text('Convert to audio:',
              size=(15, 1),
@@ -42,18 +45,21 @@ try:
     while True:
         event, values = window.read()
 
-        if values['-TEXT_INPUT-']:
-            text_sample = tts.create_text_sample(values['-TEXT_INPUT-'])
-
         if event == sg.WIN_CLOSED:
             break
-        elif event == 'Play sample':
-            tts.speak_words(text_sample)
-        elif event == 'Convert':
-            tts.save_as_audio(values['-TEXT_INPUT-'],
-                              values['-LOCATION-'],
-                              values['-FILE_NAME-'])
-            sg.popup_ok(f"{values['-FILE_NAME-']}.mp3 created!")
+
+        if values is not None:
+            tts.set_speech_rate(speech_rates.get(values.get('-OPTION MENU-')))
+            if values['-TEXT_INPUT-']:
+                text_sample = tts.create_text_sample(values['-TEXT_INPUT-'])
+
+            if event == 'Play sample':
+                tts.speak_words(text_sample)
+            elif event == 'Convert':
+                tts.save_as_audio(values['-TEXT_INPUT-'],
+                                  values['-LOCATION-'],
+                                  values['-FILE_NAME-'])
+                sg.popup_ok(f"{values['-FILE_NAME-']}.mp3 created!")
 
 except Exception as e:
     sg.Print(
@@ -62,6 +68,6 @@ except Exception as e:
         '\n\nThe program will now close',
         keep_on_top=True,
         wait=True,
-        )
+    )
 
 window.close()

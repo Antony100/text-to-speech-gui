@@ -2,7 +2,9 @@ import pyttsx3
 
 engine = pyttsx3.init()
 
-engine.setProperty('rate', 125)
+
+def set_speech_rate(rate=125):
+    engine.setProperty('rate', rate)
 
 
 def speak_words(words):
@@ -35,7 +37,3 @@ def create_text_sample(text):
 def save_as_audio(text, file_path, file_name):
     engine.save_to_file(text, f'{file_path}\{file_name}.mp3')
     engine.runAndWait()
-
-
-def change_speech_rate(rate):
-    engine.setProperty('rate', rate)
