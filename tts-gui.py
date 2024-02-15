@@ -3,6 +3,11 @@ import text_to_speech as tts
 
 sg.theme('DarkBlue3')
 
+speech_rates = {
+    "slowest": 80, "slow": 100, "normal": 125, "fast": 155, "faster": 185,
+    "fastest": 210}
+
+
 layout = [
     [sg.Text('Text to speech converter',
              size=(30, 1),
@@ -15,8 +20,7 @@ layout = [
         size=(30, 20), key='-TEXT_INPUT-',
         expand_x=True, expand_y=True)
      ],
-    [sg.Button('Play sample'), sg.Text('Set speech rate (default = 125):')],
-    # [sg.Column([[sg.Button('Move to End', size=(10, 1))]], justification='right')],
+    [sg.Button('Play sample'), sg.Push(), sg.Text('Set speech rate:'), sg.OptionMenu(speech_rates.keys(), default_value='normal', key='-OPTION MENU-')],
     [sg.HorizontalSeparator()],
     [sg.Text('Convert to audio:',
              size=(15, 1),
@@ -59,9 +63,5 @@ except Exception as e:
         keep_on_top=True,
         wait=True,
         )
-
-
-
-
 
 window.close()
