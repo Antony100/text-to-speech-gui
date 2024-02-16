@@ -2,7 +2,9 @@ import pyttsx3
 
 engine = pyttsx3.init()
 
-engine.setProperty('rate', 125)
+
+def set_speech_rate(rate=125):
+    engine.setProperty('rate', rate)
 
 
 def speak_words(words):

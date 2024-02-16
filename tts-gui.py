@@ -3,6 +3,11 @@ import text_to_speech as tts
 
 sg.theme('DarkBlue3')
 
+speech_rates = {
+    "slowest": 80, "slow": 100, "normal": 125, "fast": 155, "faster": 185,
+    "fastest": 210}
+
+
 layout = [
     [sg.Text('Text to speech converter',
              size=(30, 1),
@@ -15,7 +20,10 @@ layout = [
         size=(30, 20), key='-TEXT_INPUT-',
         expand_x=True, expand_y=True)
      ],
-    [sg.Button('Play sample'), sg.Button('Close')],
+    [sg.Button('Play sample'), sg.Push(), sg.Text('Set speech rate:'),
+     sg.OptionMenu(speech_rates.keys(), default_value='normal',
+                   key='-OPTION MENU-')
+     ],
     [sg.HorizontalSeparator()],
     [sg.Text('Convert to audio:',
              size=(15, 1),
@@ -36,19 +44,28 @@ window = sg.Window(
 try:
     while True:
         event, values = window.read()
-        if values is not None:
-            text_sample = tts.create_text_sample(values['-TEXT_INPUT-'])
 
-        if event == sg.WIN_CLOSED or event == 'Close':
+        if event == sg.WIN_CLOSED:
             break
-        elif event == 'Play sample':
-            print(text_sample)
-            tts.speak_words(text_sample)
-        elif event == 'Convert':
-            tts.save_as_audio(values['-TEXT_INPUT-'],
-                              values['-LOCATION-'],
-                              values['-FILE_NAME-'])
-            sg.popup_ok(f"{values['-FILE_NAME-']}.mp3 created!")
+
+        if values is not None:
+            tts.set_speech_rate(speech_rates.get(values.get('-OPTION MENU-')))
+            text_input = values.get('-TEXT_INPUT-')
+            location = values.get('-LOCATION-')
+            file_name = values.get('-FILE_NAME-')
+
+            if event == 'Play sample':
+                if text_input:
+                    text_sample = tts.create_text_sample(text_input)
+                    tts.speak_words(text_sample)
+                else:
+                    sg.popup_ok("Please enter text to play sample")
+            elif event == 'Convert':
+                if all((text_input, location, file_name)):
+                    tts.save_as_audio(text_input, location, file_name)
+                    sg.popup_ok(f"{file_name}.mp3 created!")
+                else:
+                    sg.popup_ok("Please fill all fields")
 
 except Exception as e:
     sg.Print(
@@ -57,7 +74,6 @@ except Exception as e:
         '\n\nThe program will now close',
         keep_on_top=True,
         wait=True,
-        )
-
+    )
 
 window.close()
