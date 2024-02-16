@@ -50,16 +50,22 @@ try:
 
         if values is not None:
             tts.set_speech_rate(speech_rates.get(values.get('-OPTION MENU-')))
-            if values['-TEXT_INPUT-']:
-                text_sample = tts.create_text_sample(values['-TEXT_INPUT-'])
+            text_input = values.get('-TEXT_INPUT-')
+            location = values.get('-LOCATION-')
+            file_name = values.get('-FILE_NAME-')
 
             if event == 'Play sample':
-                tts.speak_words(text_sample)
+                if text_input:
+                    text_sample = tts.create_text_sample(text_input)
+                    tts.speak_words(text_sample)
+                else:
+                    sg.popup_ok("Please enter text to play sample")
             elif event == 'Convert':
-                tts.save_as_audio(values['-TEXT_INPUT-'],
-                                  values['-LOCATION-'],
-                                  values['-FILE_NAME-'])
-                sg.popup_ok(f"{values['-FILE_NAME-']}.mp3 created!")
+                if all((text_input, location, file_name)):
+                    tts.save_as_audio(text_input, location, file_name)
+                    sg.popup_ok(f"{file_name}.mp3 created!")
+                else:
+                    sg.popup_ok("Please fill all fields")
 
 except Exception as e:
     sg.Print(
